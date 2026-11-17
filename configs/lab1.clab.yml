@@ -1,0 +1,115 @@
+name: lab1
+
+topology:
+  kinds:
+    linux:
+      image: frrouting/frr:latest
+  nodes:
+    spine1:
+      kind: linux
+      binds:
+        - configs/spine1/frr.conf:/etc/frr/frr.conf:ro
+        - configs/spine1/daemons:/etc/frr/daemons:ro
+    spine2:
+      kind: linux
+      binds:
+        - configs/spine2/frr.conf:/etc/frr/frr.conf:ro
+        - configs/spine2/daemons:/etc/frr/daemons:ro
+    leaf1:
+      kind: linux
+      binds:
+        - configs/leaf1/frr.conf:/etc/frr/frr.conf:ro
+        - configs/leaf1/daemons:/etc/frr/daemons:ro
+        - configs/leaf1/setup.sh:/root/setup.sh:ro
+      exec:
+        - sh /root/setup.sh
+    leaf2:
+      kind: linux
+      binds:
+        - configs/leaf2/frr.conf:/etc/frr/frr.conf:ro
+        - configs/leaf2/daemons:/etc/frr/daemons:ro
+        - configs/leaf2/setup.sh:/root/setup.sh:ro
+      exec:
+        - sh /root/setup.sh
+    leaf3:
+      kind: linux
+      binds:
+        - configs/leaf3/frr.conf:/etc/frr/frr.conf:ro
+        - configs/leaf3/daemons:/etc/frr/daemons:ro
+        - configs/leaf3/setup.sh:/root/setup.sh:ro
+      exec:
+        - sh /root/setup.sh
+    border1:
+      kind: linux
+      binds:
+        - configs/border1/frr.conf:/etc/frr/frr.conf:ro
+        - configs/border1/daemons:/etc/frr/daemons:ro
+    server1:
+      kind: linux
+      image: praqma/network-multitool:latest
+      exec:
+        - ip link set eth1 mtu 9000 up
+        - ip addr add 10.10.20.1/24 dev eth1
+        - ip route replace default via 10.10.20.254
+    server2:
+      kind: linux
+      exec:
+        - ip link set eth1 down
+        - ip link set eth2 down
+        - ip link add bond0 type bond mode 802.3ad miimon 100 xmit_hash_policy layer3+4
+        - ip link set eth1 master bond0
+        - ip link set eth2 master bond0
+        - ip link set bond0 mtu 9000 up
+        - ip addr add 10.20.20.2/24 dev bond0
+        - ip route replace default via 10.20.20.254
+    server3:
+      kind: linux
+      image: praqma/network-multitool:latest
+      exec:
+        - ip link set eth1 mtu 9000 up
+        - ip addr add 10.20.20.3/24 dev eth1
+        - ip route replace default via 10.20.20.254
+    server4:
+      kind: linux
+      image: praqma/network-multitool:latest
+      exec:
+        - ip link set eth1 mtu 9000 up
+        - ip addr add 10.10.10.4/24 dev eth1
+        - ip route replace default via 10.10.10.254
+    server5:
+      kind: linux
+      image: praqma/network-multitool:latest
+      exec:
+        - ip link set eth1 mtu 9000 up
+        - ip addr add 10.10.10.5/24 dev eth1
+        - ip route replace default via 10.10.10.254
+    server6:
+      kind: linux
+      image: praqma/network-multitool:latest
+      exec:
+        - ip link set eth1 mtu 9000 up
+        - ip addr add 10.20.10.6/24 dev eth1
+        - ip route replace default via 10.20.10.254
+
+  links:
+    - endpoints: ["leaf1:eth1", "spine1:eth1"]
+      mtu: 9216
+    - endpoints: ["leaf2:eth1", "spine1:eth2"]
+      mtu: 9216
+    - endpoints: ["leaf3:eth1", "spine1:eth3"]
+      mtu: 9216
+    - endpoints: ["leaf1:eth2", "spine2:eth1"]
+      mtu: 9216
+    - endpoints: ["leaf2:eth2", "spine2:eth2"]
+      mtu: 9216
+    - endpoints: ["leaf3:eth2", "spine2:eth3"]
+      mtu: 9216
+    - endpoints: ["leaf3:eth5", "border1:eth1"]
+      mtu: 9216
+    - endpoints: ["server1:eth1", "leaf1:eth3"]
+    - endpoints: ["server2:eth1", "leaf1:eth4"]
+    - endpoints: ["server2:eth2", "leaf2:eth5"]
+    - endpoints: ["server3:eth1", "leaf2:eth3"]
+    - endpoints: ["server4:eth1", "leaf2:eth4"]
+    - endpoints: ["server5:eth1", "leaf3:eth3"]
+    - endpoints: ["server6:eth1", "leaf3:eth4"]

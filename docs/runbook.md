@@ -85,3 +85,24 @@ docker exec -it clab-lab1-server4 arp | grep 10.10.10.254
 docker exec -it clab-lab1-server4 ping -Q 0x28 -c 10 10.10.10.5
 docker exec -it clab-lab1-leaf2 tc -s filter show dev eth2 parent 1:
 Ожидается вывод с задаными фильтрами и строка "(success Х )", где Х - кол-во пакетов 
+
+
+
+## Graceful shutdown одного leaf 
+
+# Административное гашение BGP с уведомлением соседей
+# (Cease / Administrative Shutdown по RFC 8203, конфигурация сохраняется)
+docker exec clab-lab1-leaf1 vtysh -c "conf t" -c "router bgp 65100" \
+  -c "bgp shutdown message 'planned maintenance leaf1'"
+
+# Для случаев, когда нужно погасить одного соседа — 
+docker exec clab-lab1-leaf1 vtysh -c "conf t" -c "router bgp 65100" -с "neighbor <spine> shutdown"
+
+# Отключение leaf1
+docker exec clab-lab1-leaf1 frrinit.sh stop
+
+# Возврат leaf1
+docker exec clab-lab1-leaf1 frrinit.sh start
+
+# Включение BGP
+docker exec clab-lab1-leaf1 vtysh -c "conf t" -c "router bgp 65100" -c "no bgp shutdown"

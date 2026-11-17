@@ -8,42 +8,42 @@ topology:
     spine1:
       kind: linux
       binds:
-        - configs/spine1/frr.conf:/etc/frr/frr.conf:ro
-        - configs/spine1/daemons:/etc/frr/daemons:ro
+        - spine1/frr.conf:/etc/frr/frr.conf:ro
+        - spine1/daemons:/etc/frr/daemons:ro
     spine2:
       kind: linux
       binds:
-        - configs/spine2/frr.conf:/etc/frr/frr.conf:ro
-        - configs/spine2/daemons:/etc/frr/daemons:ro
+        - spine2/frr.conf:/etc/frr/frr.conf:ro
+        - spine2/daemons:/etc/frr/daemons:ro
     leaf1:
       kind: linux
       binds:
-        - configs/leaf1/frr.conf:/etc/frr/frr.conf:ro
-        - configs/leaf1/daemons:/etc/frr/daemons:ro
-        - configs/leaf1/setup.sh:/root/setup.sh:ro
+        - leaf1/frr.conf:/etc/frr/frr.conf:ro
+        - leaf1/daemons:/etc/frr/daemons:ro
+        - leaf1/setup.sh:/root/setup.sh:ro
       exec:
         - sh /root/setup.sh
     leaf2:
       kind: linux
       binds:
-        - configs/leaf2/frr.conf:/etc/frr/frr.conf:ro
-        - configs/leaf2/daemons:/etc/frr/daemons:ro
-        - configs/leaf2/setup.sh:/root/setup.sh:ro
+        - leaf2/frr.conf:/etc/frr/frr.conf:ro
+        - leaf2/daemons:/etc/frr/daemons:ro
+        - leaf2/setup.sh:/root/setup.sh:ro
       exec:
         - sh /root/setup.sh
     leaf3:
       kind: linux
       binds:
-        - configs/leaf3/frr.conf:/etc/frr/frr.conf:ro
-        - configs/leaf3/daemons:/etc/frr/daemons:ro
-        - configs/leaf3/setup.sh:/root/setup.sh:ro
+        - leaf3/frr.conf:/etc/frr/frr.conf:ro
+        - leaf3/daemons:/etc/frr/daemons:ro
+        - leaf3/setup.sh:/root/setup.sh:ro
       exec:
         - sh /root/setup.sh
     border1:
       kind: linux
       binds:
-        - configs/border1/frr.conf:/etc/frr/frr.conf:ro
-        - configs/border1/daemons:/etc/frr/daemons:ro
+        - border1/frr.conf:/etc/frr/frr.conf:ro
+        - border1/daemons:/etc/frr/daemons:ro
     server1:
       kind: linux
       image: praqma/network-multitool:latest

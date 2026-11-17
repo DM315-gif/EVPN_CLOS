@@ -2,7 +2,7 @@
 
 Схема ниже показывает связность leaf/spine, VRF, BGP‑соседства и принадлежность сервера к L2VNI:
 
-![Топология Containerlab:](topology.svg)
+![Топология Containerlab:](topology.png)
 
 ## Пояснения к схеме
 
